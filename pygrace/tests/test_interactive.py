@@ -322,7 +322,7 @@ if __name__ == "__main__":
     import shutil
     installed = bool(shutil.which('xmgrace'))
     if installed:
-        suite0 = unittest.makeSuite(PyGrace_PyGrace_TestCase)
+        suite0 = unittest.defaultTestLoader.loadTestsFromTestCase(PyGrace_PyGrace_TestCase)
         alltests = (suite0,)
         alltests = unittest.TestSuite(alltests)
         unittest.TextTestRunner(verbosity=2).run(alltests)
