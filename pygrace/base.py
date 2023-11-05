@@ -460,7 +460,7 @@ class GraceObject(object):
     def _latex_friendly(self, string):
         """Return a string that won't make latex complain, for example escape
         all underscores."""
-        return string.replace('_', '\_').replace('&', '\&')
+        return string.replace('_', r'\_').replace('&', r'\&')
 
     def cheatsheet(self, filename):
         """produce a latex file listing the object's attributes and methods"""
