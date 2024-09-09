@@ -10,6 +10,7 @@
 from . import base
 import sys
 import math
+from numbers import Integral
 
 __all__ = ['LINEAR_SCALE','LOGARITHMIC_SCALE','AxisBar','AxisLabel', \
            'Tick','TickLabel','Axis']
@@ -110,16 +111,16 @@ class Tick(base.GraceObject):
 
         # check type of AxisLabel specific attribute
         if key == 'major':
-            self._check_type((float, int), key, value)
+            self._check_type((float, Integral), key, value)
             self._check_range(key, value, 0, None, includeMin=False)
         elif key == 'minor_ticks':
-            self._check_type(int, key, value)
+            self._check_type(Integral, key, value)
             self._check_range(key, value, 0, None)
         elif key.endswith('grid'):
             self._check_type(str, key, value)
             self._check_membership(key, value, ('on', 'off'))
         elif key == 'default':
-            self._check_type(int, key, value)
+            self._check_type(Integral, key, value)
         elif key == 'place_rounded':
             self._check_type(str, key, value)
             self._check_membership(key, value, ('true', 'false'))
@@ -255,13 +256,13 @@ class TickLabel(base.GraceObject):
 
         # check type of AxisLabel specific attribute
         if key == 'angle':
-            self._check_type((float, int), key, value)
+            self._check_type((float, Integral), key, value)
             self._check_range(key, value, 0, 360, includeMax=True)
         elif key == 'stagger':
-            self._check_type(int, key, value)
+            self._check_type(Integral, key, value)
             self._check_range(key, value, 0, 9)
         elif key == 'start' or key == 'stop':
-            self._check_type((float, int), key, value)
+            self._check_type((float, Integral), key, value)
         elif key == 'start_type' or key == 'stop_type':
             self._check_type(str, key, value)
             self._check_membership(key, value, ('auto', 'spec'))

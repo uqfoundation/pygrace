@@ -9,6 +9,7 @@
 #
 import time
 import os
+from numbers import Integral
 
 from .base import GraceObject
 from .graph import Graph
@@ -52,7 +53,7 @@ class Project(GraceObject):
 
         # check Project specific attributes
         if key == 'width' or key == 'height':
-            self._check_type(int, key, value)
+            self._check_type(Integral, key, value)
             self._check_range(key, value, 0, None)
         elif key == 'verbose':
             self._check_type(bool, key, value)

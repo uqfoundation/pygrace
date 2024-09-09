@@ -13,6 +13,7 @@ from .dataset import DataSet, SYMBOLS, INDEX2SYMBOLS, LINESTYLES, \
     INDEX2LINESTYLES
 from .axis import Axis,LINEAR_SCALE,LOGARITHMIC_SCALE
 import math
+from numbers import Integral
 
 __all__ = ['INDEX_ORIGIN','Subtitle','Title','View','World','Frame', \
            'Legend','Graph']
@@ -92,7 +93,7 @@ class World(GraceObject):
 
         # check type of Frame specific attribute
         if key == 'znorm':
-            self._check_type((float, int), key, value)
+            self._check_type((float, Integral), key, value)
         elif key == 'stack_world':
             self._check_type(tuple, key, value)
 
@@ -125,7 +126,7 @@ class Frame(GraceObject):
 
         # check type of Frame specific attribute
         if key == 'type':
-            self._check_type(int, key, value)
+            self._check_type(Integral, key, value)
             self._check_range(key, value, 0, 6, includeMax=False)
         GraceObject.__setattr__(self, key, value)
 
@@ -172,7 +173,7 @@ class Legend(GraceObject):
             self._check_type(str, key, value)
             self._check_membership(key, value, ('true', 'false'))
         elif key == 'hgap' or key == 'vgap':
-            self._check_type((float, int), key, value)
+            self._check_type((float, Integral), key, value)
             
         GraceObject.__setattr__(self, key, value)
       
@@ -231,7 +232,7 @@ class Graph(GraceObject):
             self._check_type(str, key, value)
             self._check_membership(key, value, ('true', 'false'))
         elif key == 'bar_hgap':
-            self._check_type((float, int), key, value)
+            self._check_type((float, Integral), key, value)
 
         GraceObject.__setattr__(self, key, value)
 

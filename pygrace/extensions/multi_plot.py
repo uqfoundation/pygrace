@@ -93,9 +93,9 @@ class MultiPlotProject(Project):
 
         # for backward compatibility, allow hoffset and voffset to be
         # floats, which is interpretted as a symmetric offset
-        if type(hoffset)==type(0.0):
+        if isinstance(hoffset, float):
             hoffset = (hoffset,hoffset)
-        if type(voffset)==type(0.0):
+        if isinstance(voffset, float):
             voffset = (voffset,voffset)
 
         self.rows = rows
@@ -139,9 +139,9 @@ class MultiPlotProject(Project):
 
         # for backward compatibility, allow hoffset and voffset to be
         # floats, which is interpretted as a symmetric offset
-        if type(hoffset)==type(0.0):
+        if isinstance(hoffset, float):
             hoffset = (hoffset,hoffset)
-        if type(voffset)==type(0.0):
+        if isinstance(voffset, float):
             voffset = (voffset,voffset)
 
         # set attributes here

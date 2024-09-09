@@ -8,6 +8,7 @@
 #  - https://github.com/uqfoundation/pygrace/blob/master/LICENSE
 #
 from .base import GraceObject
+from numbers import Integral
 
 __all__ = ['SYMBOLS','Symbol','Line','Baseline','Fill','AnnotatedValue', \
            'ErrorBar','DataSet']
@@ -72,12 +73,12 @@ class Symbol(GraceObject):
 
         # check type of Symbol specific attribute
         if key == 'skip':
-            self._check_type(int, key, value)
+            self._check_type(Integral, key, value)
         elif key == 'char':
-            self._check_type(int, key, value)
+            self._check_type(Integral, key, value)
             self._check_range(key, value, 0, 128, includeMax=False)
         elif key == 'shape':
-            self._check_type(int, key, value)
+            self._check_type(Integral, key, value)
             self._check_range(key, value, 0, 12, includeMax=False)
 
         GraceObject.__setattr__(self, key, value)
@@ -113,7 +114,7 @@ class Line(GraceObject):
 
         # check Line specific attributes
         if key == 'type':
-            self._check_type(int, key, value)
+            self._check_type(Integral, key, value)
             self._check_range(key, value, 0, 6, includeMax=False)
             
         GraceObject.__setattr__(self, key, value)
@@ -140,7 +141,7 @@ class Baseline(GraceObject):
 
         # check BaseLine specific attributes
         if key == 'type':
-            self._check_type(int, key, value)
+            self._check_type(Integral, key, value)
             self._check_range(key, value, 0, 6, includeMax=False)
             
         GraceObject.__setattr__(self, key, value)
@@ -166,10 +167,10 @@ class Fill(GraceObject):
 
         # check Fill specific attributes
         if key == 'type':
-            self._check_type(int, key, value)
+            self._check_type(Integral, key, value)
             self._check_range(key, value, 0, 2)
         elif key == 'rule':
-            self._check_type(int, key, value)
+            self._check_type(Integral, key, value)
             self._check_range(key, value, 0, 1)
             
         GraceObject.__setattr__(self, key, value)
@@ -205,7 +206,7 @@ class AnnotatedValue(GraceObject):
 
         # check AnnotatedValue specific attributes
         if key == 'type':
-            self._check_type(int, key, value)
+            self._check_type(Integral, key, value)
             self._check_range(key, value, 0, 6, includeMax=False)
             
         GraceObject.__setattr__(self, key, value)
@@ -250,7 +251,7 @@ class ErrorBar(GraceObject):
             self._check_type(str, key, value)
             self._check_membership(key, value, ('on', 'off'))
         elif key == 'riser_clip_length':
-            self._check_type((float, int), key, value)
+            self._check_type((float, Integral), key, value)
             self._check_range(key, value, 0, None)
 
         GraceObject.__setattr__(self, key, value)
