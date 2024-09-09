@@ -8,6 +8,7 @@
 #  - https://github.com/uqfoundation/pygrace/blob/master/LICENSE
 #
 import sys
+from numbers import Integral
 
 __all__ = ['NAMED_CHILD_TYPES','DYNAMIC_CHILD_TYPES','GraceObject','BaseSet']
 
@@ -192,32 +193,32 @@ class GraceObject(object):
 
         # this list of checks on the type and value is not complete (FIX)
         if key.endswith('linestyle'):
-            self._check_type((int,), key, value)
+            self._check_type((Integral,), key, value)
             self._check_range(key, value, 0, 8)
         elif key.endswith('linewidth'):
-            self._check_type((float, int), key, value)
+            self._check_type((float, Integral), key, value)
             self._check_range(key, value, 0, None)
         elif key.endswith('just'):
-            self._check_type((int,), key, value)
+            self._check_type((Integral,), key, value)
             self._check_range(key, value, 0, 15, includeMax=False)
         elif key.endswith('size'):
-            self._check_type((float, int), key, value)
+            self._check_type((float, Integral), key, value)
             self._check_range(key, value, 0, None)
         elif key == 'x' or key == 'y':
-            self._check_type((float, int), key, value)
+            self._check_type((float, Integral), key, value)
         elif key == 'xmin' or key == 'xmax' or key == 'ymin' or key == 'ymax':
-            self._check_type((float, int), key, value)
+            self._check_type((float, Integral), key, value)
         elif key == 'onoff':
             self._check_type((str,), key, value)
         elif key == 'hidden':
             self._check_type((str,), key, value)
         elif key == 'rot':
-            self._check_type((float, int), key, value)
+            self._check_type((float, Integral), key, value)
         elif key == 'length': # legend line length
-            self._check_type((int,), key, value)
+            self._check_type((Integral,), key, value)
             self._check_range(key, value, 0, 8, includeMax=True)
         elif key.endswith('pattern'):
-            self._check_type((int,), key, value)
+            self._check_type((Integral,), key, value)
             self._check_range(key, value, 0, 32, includeMax=False)
         elif key.endswith('_tup'):
             self._check_type(tuple, key, value)
@@ -241,7 +242,7 @@ class GraceObject(object):
             upperTypes = [t.upper() for t in FORMAT_TYPES]
             self._check_membership(key, value.upper(), upperTypes)
         elif key == 'prec':
-            self._check_type(int, key, value)
+            self._check_type(Integral, key, value)
             self._check_range(key, value, 0, 9)
         elif key == 'append' or key == 'prepend':
             self._check_type(str, key, value)
@@ -612,10 +613,9 @@ class BaseSet(object):
         """Returns true if either integer index or string value is in."""
         if isinstance(value, str):
             return value in self.name2item
-        elif isinstance(value, int):
+        if isinstance(value, Integral):
             return value in self.index2item
-        else:
-            return False
+        return False
 
     def __str__(self):
         """Returns the string representation of each item in the set (sorted
@@ -634,7 +634,7 @@ class BaseSet(object):
         if value in self:
             if isinstance(value, str):
                 return '"%s"' % value
-            elif isinstance(value, int):
+            if isinstance(value, Integral):
                 return str(value)
         else:
             message = str(value)

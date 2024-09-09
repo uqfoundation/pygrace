@@ -8,6 +8,7 @@
 #  - https://github.com/uqfoundation/pygrace/blob/master/LICENSE
 #
 from .base import GraceObject 
+from numbers import Integral
 
 __all__ = ['DRAWTEXT_JUSTIFICATIONS','DrawingObject','DrawBox','DrawText', \
            'DrawLine','DrawElipse','LabelledPoint','MultiLegend']
@@ -187,13 +188,13 @@ class DrawLine(DrawingObject):
         if key == 'start' or key == 'end':
             self._check_type(tuple, key, value)
         elif key == 'arrow':
-            self._check_type(int, key, value)
+            self._check_type(Integral, key, value)
             self._check_range(key, value, 0, 3)
         elif key == 'arrow_type':
-            self._check_type(int, key, value)
+            self._check_type(Integral, key, value)
             self._check_range(key, value, 0, 2)
         elif key == 'arrow_length':
-            self._check_type((float, int), key, value)
+            self._check_type((float, Integral), key, value)
             self._check_range(key, value, 0, None)
         elif key == 'arrow_layout':
             self._check_type(tuple, key, value)
