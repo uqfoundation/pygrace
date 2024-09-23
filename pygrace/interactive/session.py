@@ -13,6 +13,15 @@ Instantiate the grace class     >>> pg = grace()
 Get help                        >>> pg.doc()
 '''
 
+import sys
+if sys.hexversion < 0x30d00b1:
+    _f_locals = None
+else:
+    def _f_locals(name, val):
+        "update enclosing locals, given https://peps.python.org/pep-0667"
+        sys._getframe(1).f_locals[name] = val
+        return
+
 from math import *
 from numpy import *
 
@@ -41,7 +50,7 @@ Notes:
  _exists(name) --> True if is a variable in grace
 '''
 
-    def __init__(self, *args, **kwds):
+    def __init__(self, *args, **kwds): #OK
         from .project import Project
         self.session = Project(*args, **kwds)
         self.whos = {}
@@ -53,7 +62,7 @@ Notes:
         __doc__ = Project.__init__.__doc__
         return
 
-    def __getattr__(self,name):
+    def __getattr__(self,name): #OK
         _locals = dict(self=self, name=name)
         try:
             code = 'from math import *; from numpy import *;'
@@ -69,19 +78,19 @@ Notes:
             attr = _locals['attr']
         return attr
 
-    def __setattr__(self,name,value):
+    def __setattr__(self,name,value): #OK (see put)
         if name in ['session','whos','reserved']:
             self.__dict__[name] = value
             return
         self.put(name,value)
         return
 
-    def __call__(self,*args):
+    def __call__(self,*args): #OK (see eval)
         for arg in args:
             self.eval(arg)
         return
 
-    def _validate(self,name):
+    def _validate(self,name): #OK
         '''_validate(name) --> raise NameError if is invalid python name'''
         #a valid python name begins with a letter or underscore,
         #and can include only alphanumeric symbols and the underscore.
@@ -96,40 +105,40 @@ Notes:
             raise NameError("invalid name '%s'; is a reserved word" % name)
         return
 
-    def _putlocal(self,name,value):
+    def _putlocal(self,name,value): #OK
         '''_putlocal(name,value) --> add a variable to local store'''
         self._validate(name)
         self.whos[name] = value
         return
 
-    def _getlocal(self,name,skip=True):
+    def _getlocal(self,name,skip=True): #OK
         '''_getlocal(name) --> return variable value from local store'''
         if name in self.whos:
             return self.whos[name]
         if skip: return #name not found in local store
         raise NameError("'%s' is not defined locally" % str(name))
 
-    def _poplocal(self,name):
+    def _poplocal(self,name): #OK
         '''_poplocal(name) --> delete variable from local store, return value'''
         return self.whos.pop(name,None)
 
-    def _wholist(self):
+    def _wholist(self): #OK
         '''_wholist() --> get list of strings containing grace variables''' 
         return list(self.whos.keys())
 
-    def _exists(self,name):
+    def _exists(self,name): #OK
         '''_exists(name) --> True if is a variable in grace'''
         exists = self._wholist().count(name)
         if exists: return True
         return False
 
-    def doc(self):
+    def doc(self): #OK
         print(self.__doc__)
-        print(__license__[:153]) # print copyright
-        print(__license__[-291:]) # print reference
+        #print(__license__[:153]) # print copyright
+        #print(__license__[-291:]) # print reference
         return
 
-    def restart(self):
+    def restart(self): #OK
         '''restart() --> restart a xmgrace window'''
         vars = self.who()
         self.exit()
@@ -148,7 +157,10 @@ Notes:
                 code += var+" = self._getlocal('"+var+"')"
                 code = compile(code, '<string>', 'exec')
                 exec(code, _locals)
-                locals()[var] = _locals[var]
+                if _f_locals is None:
+                    locals()[var] = _locals[var]
+                else:
+                    _f_locals(var, _locals[var])
             if (type(val) is type(array([]))):
                 val = val.tolist()
                 code = 'from math import *; from numpy import *;'
@@ -156,7 +168,10 @@ Notes:
             else: code = name+' = '+str(val)
             code = compile(code, '<string>', 'exec')
             exec(code, _locals)
-            locals()[name] = _locals[name]
+            if _f_locals is None:
+                locals()[name] = _locals[name]
+            else:
+                _f_locals(name, _locals[name])
             for var in varlist: #use varlist to update state variables
                 _locals[var] = locals()[var]
                 code = 'from math import *; from numpy import *;'
@@ -166,7 +181,7 @@ Notes:
             return
         return self._putlocal(name,val)
 
-    def get(self,name):
+    def get(self,name): #OK
         '''get(name) --> value; get value from grace session'''
         #if name.count('+') or ...
         #if name.count('[') or name.count('.') or name.count('('):
@@ -177,7 +192,10 @@ Notes:
             code += var+" = self._getlocal('"+var+"')"
             code = compile(code, '<string>', 'exec')
             exec(code, _locals)
-            locals()[var] = _locals[var]
+            if _f_locals is None:
+                locals()[var] = _locals[var]
+            else:
+                _f_locals(var, _locals[var])
         code = 'from math import *; from numpy import *;'
         code += '___ = '+name
         code = compile(code, '<string>', 'exec')
@@ -186,12 +204,12 @@ Notes:
         return ___
         #return self._getlocal(name)
 
-    def who(self,name=None):
+    def who(self,name=None): #OK
         '''who([name]) --> return the existing grace variables'''
         if name: return self._getlocal(name,skip=False)
         return self.whos
 
-    def delete(self,name):
+    def delete(self,name): #OK
         '''delete(name) --> destroy selected grace variables'''
         if not name.count(','):
             self._poplocal(name)
@@ -216,7 +234,10 @@ Notes:
                 code += 'outlist.append("'+name+'")'
                 code = compile(code, '<string>', 'exec')
                 exec(code, _locals)
-                locals()[name] = _locals[name]
+                if _f_locals is None:
+                    locals()[name] = _locals[name]
+                else:
+                    _f_locals(name, _locals[name])
             outlist[:] = _locals['outlist']
         if com == 'exit':
             return
@@ -232,7 +253,10 @@ Notes:
                 name = com.split('=')[0].strip()
                 if not name.count('['):
                     outlist.append(name)
-                    locals()[name] = _locals[name]
+                    if _f_locals is None:
+                        locals()[name] = _locals[name]
+                    else:
+                        _f_locals(name, _locals[name])
         except:
             try: #if intended for gracePlot
                 code = 'from math import *; from numpy import *;'
@@ -271,7 +295,10 @@ Notes:
                 code += 'outlist.append("'+name+'")'
                 code = compile(code, '<string>', 'exec')
                 exec(code, _locals)
-                locals()[name] = _locals[name]
+                if _f_locals is None:
+                    locals()[name] = _locals[name]
+                else:
+                    _f_locals(name, _locals[name])
             outlist[:] = _locals['outlist']
         while 1:
             com = input('grace> ')
@@ -296,7 +323,10 @@ Notes:
                         name = com.split('=')[0].strip()
                         if not name.count('['):
                             outlist.append(name)
-                            locals()[name] = _locals[name]
+                            if _f_locals is None:
+                                locals()[name] = _locals[name]
+                            else:
+                                _f_locals(name, _locals[name])
                 except:
                     try: #if intended for gracePlot
                         code = 'from math import *; from numpy import *;'
