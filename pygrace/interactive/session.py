@@ -13,6 +13,15 @@ Instantiate the grace class     >>> pg = grace()
 Get help                        >>> pg.doc()
 '''
 
+import sys
+if sys.hexversion < 0x30d00b1:
+    _f_locals = None
+else:
+    def _f_locals(name, val):
+        "update enclosing locals, given https://peps.python.org/pep-0667"
+        sys._getframe(1).f_locals[name] = val
+        return
+
 from math import *
 from numpy import *
 
@@ -125,8 +134,8 @@ Notes:
 
     def doc(self):
         print(self.__doc__)
-        print(__license__[:153]) # print copyright
-        print(__license__[-291:]) # print reference
+        #print(__license__[:153]) # print copyright
+        #print(__license__[-291:]) # print reference
         return
 
     def restart(self):
@@ -148,7 +157,10 @@ Notes:
                 code += var+" = self._getlocal('"+var+"')"
                 code = compile(code, '<string>', 'exec')
                 exec(code, _locals)
-                locals()[var] = _locals[var]
+                if _f_locals is None:
+                    locals()[var] = _locals[var]
+                else:
+                    _f_locals(var, _locals[var])
             if (type(val) is type(array([]))):
                 val = val.tolist()
                 code = 'from math import *; from numpy import *;'
@@ -156,7 +168,10 @@ Notes:
             else: code = name+' = '+str(val)
             code = compile(code, '<string>', 'exec')
             exec(code, _locals)
-            locals()[name] = _locals[name]
+            if _f_locals is None:
+                locals()[name] = _locals[name]
+            else:
+                _f_locals(name, _locals[name])
             for var in varlist: #use varlist to update state variables
                 _locals[var] = locals()[var]
                 code = 'from math import *; from numpy import *;'
@@ -177,7 +192,10 @@ Notes:
             code += var+" = self._getlocal('"+var+"')"
             code = compile(code, '<string>', 'exec')
             exec(code, _locals)
-            locals()[var] = _locals[var]
+            if _f_locals is None:
+                locals()[var] = _locals[var]
+            else:
+                _f_locals(var, _locals[var])
         code = 'from math import *; from numpy import *;'
         code += '___ = '+name
         code = compile(code, '<string>', 'exec')
@@ -216,7 +234,10 @@ Notes:
                 code += 'outlist.append("'+name+'")'
                 code = compile(code, '<string>', 'exec')
                 exec(code, _locals)
-                locals()[name] = _locals[name]
+                if _f_locals is None:
+                    locals()[name] = _locals[name]
+                else:
+                    _f_locals(name, _locals[name])
             outlist[:] = _locals['outlist']
         if com == 'exit':
             return
@@ -232,7 +253,10 @@ Notes:
                 name = com.split('=')[0].strip()
                 if not name.count('['):
                     outlist.append(name)
-                    locals()[name] = _locals[name]
+                    if _f_locals is None:
+                        locals()[name] = _locals[name]
+                    else:
+                        _f_locals(name, _locals[name])
         except:
             try: #if intended for gracePlot
                 code = 'from math import *; from numpy import *;'
@@ -271,7 +295,10 @@ Notes:
                 code += 'outlist.append("'+name+'")'
                 code = compile(code, '<string>', 'exec')
                 exec(code, _locals)
-                locals()[name] = _locals[name]
+                if _f_locals is None:
+                    locals()[name] = _locals[name]
+                else:
+                    _f_locals(name, _locals[name])
             outlist[:] = _locals['outlist']
         while 1:
             com = input('grace> ')
@@ -296,7 +323,10 @@ Notes:
                         name = com.split('=')[0].strip()
                         if not name.count('['):
                             outlist.append(name)
-                            locals()[name] = _locals[name]
+                            if _f_locals is None:
+                                locals()[name] = _locals[name]
+                            else:
+                                _f_locals(name, _locals[name])
                 except:
                     try: #if intended for gracePlot
                         code = 'from math import *; from numpy import *;'
