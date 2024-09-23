@@ -50,7 +50,7 @@ Notes:
  _exists(name) --> True if is a variable in grace
 '''
 
-    def __init__(self, *args, **kwds): #OK
+    def __init__(self, *args, **kwds):
         from .project import Project
         self.session = Project(*args, **kwds)
         self.whos = {}
@@ -62,7 +62,7 @@ Notes:
         __doc__ = Project.__init__.__doc__
         return
 
-    def __getattr__(self,name): #OK
+    def __getattr__(self,name):
         _locals = dict(self=self, name=name)
         try:
             code = 'from math import *; from numpy import *;'
@@ -78,19 +78,19 @@ Notes:
             attr = _locals['attr']
         return attr
 
-    def __setattr__(self,name,value): #OK (see put)
+    def __setattr__(self,name,value):
         if name in ['session','whos','reserved']:
             self.__dict__[name] = value
             return
         self.put(name,value)
         return
 
-    def __call__(self,*args): #OK (see eval)
+    def __call__(self,*args):
         for arg in args:
             self.eval(arg)
         return
 
-    def _validate(self,name): #OK
+    def _validate(self,name):
         '''_validate(name) --> raise NameError if is invalid python name'''
         #a valid python name begins with a letter or underscore,
         #and can include only alphanumeric symbols and the underscore.
@@ -105,40 +105,40 @@ Notes:
             raise NameError("invalid name '%s'; is a reserved word" % name)
         return
 
-    def _putlocal(self,name,value): #OK
+    def _putlocal(self,name,value):
         '''_putlocal(name,value) --> add a variable to local store'''
         self._validate(name)
         self.whos[name] = value
         return
 
-    def _getlocal(self,name,skip=True): #OK
+    def _getlocal(self,name,skip=True):
         '''_getlocal(name) --> return variable value from local store'''
         if name in self.whos:
             return self.whos[name]
         if skip: return #name not found in local store
         raise NameError("'%s' is not defined locally" % str(name))
 
-    def _poplocal(self,name): #OK
+    def _poplocal(self,name):
         '''_poplocal(name) --> delete variable from local store, return value'''
         return self.whos.pop(name,None)
 
-    def _wholist(self): #OK
+    def _wholist(self):
         '''_wholist() --> get list of strings containing grace variables''' 
         return list(self.whos.keys())
 
-    def _exists(self,name): #OK
+    def _exists(self,name):
         '''_exists(name) --> True if is a variable in grace'''
         exists = self._wholist().count(name)
         if exists: return True
         return False
 
-    def doc(self): #OK
+    def doc(self):
         print(self.__doc__)
         #print(__license__[:153]) # print copyright
         #print(__license__[-291:]) # print reference
         return
 
-    def restart(self): #OK
+    def restart(self):
         '''restart() --> restart a xmgrace window'''
         vars = self.who()
         self.exit()
@@ -181,7 +181,7 @@ Notes:
             return
         return self._putlocal(name,val)
 
-    def get(self,name): #OK
+    def get(self,name):
         '''get(name) --> value; get value from grace session'''
         #if name.count('+') or ...
         #if name.count('[') or name.count('.') or name.count('('):
@@ -204,12 +204,12 @@ Notes:
         return ___
         #return self._getlocal(name)
 
-    def who(self,name=None): #OK
+    def who(self,name=None):
         '''who([name]) --> return the existing grace variables'''
         if name: return self._getlocal(name,skip=False)
         return self.whos
 
-    def delete(self,name): #OK
+    def delete(self,name):
         '''delete(name) --> destroy selected grace variables'''
         if not name.count(','):
             self._poplocal(name)
