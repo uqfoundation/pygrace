@@ -23,6 +23,7 @@ matrix:
 
         - python: '3.15t-dev'
           env:
+            - CYTHON="true" # cython source build
 
         - python: 'pypy3.10-7.3.19'
           env:
