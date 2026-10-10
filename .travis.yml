@@ -50,7 +50,7 @@ before_install: #NOTE: DISPLAY-related tests don't break build on Travis
     - if [[ $NOWHEEL == "true" ]]; then pip install cython --no-binary cython --force-reinstall; fi
     - if [[ $NOWHEEL == "true" ]]; then export CIBUILDWHEEL=0; fi
     - if [[ $NOWHEEL == "true" ]]; then export NPY_DISABLE_SVML=1; fi
-    - if [[ $NOWHEEL == "true" ]]; then pip install numpy --no-binary :all: --no-build-isolation --pre; fi
+    - if [[ $NOWHEEL == "true" ]]; then pip install numpy --no-binary numpy --no-build-isolation --pre; fi
 
 install:
     - python -m pip install .
