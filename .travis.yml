@@ -23,7 +23,7 @@ matrix:
 
         - python: '3.15t-dev'
           env:
-            - NOWHEEL="true" # cython source build
+            - CYTHON="true" # cython source build
 
         - python: 'pypy3.10-7.3.19'
           env:
@@ -46,7 +46,7 @@ before_install: #NOTE: DISPLAY-related tests don't break build on Travis
     - sudo apt-get -y install xorg openbox grace # DISPLAY=:0.0 xmgrace #Can't open display; Failed initializing GUI, exiting
     - set -e  # fail on any error
     - if [[ $COVERAGE == "true" ]]; then pip install coverage; fi
-    - if [[ $NOWHEEL == "true" ]]; then pip install cython --no-binary cython --force-reinstall; fi
+    - if [[ $CYTHON == "true" ]]; then pip install cython --no-binary cython --force-reinstall; fi
 
 install:
     - python -m pip install .
