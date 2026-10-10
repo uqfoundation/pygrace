@@ -23,7 +23,7 @@ matrix:
 
         - python: '3.15t-dev'
           env:
-            - CYTHON="true" # cython source build
+            - NOWHEEL="true" # numpy source build
 
         - python: 'pypy3.10-7.3.19'
           env:
@@ -46,8 +46,7 @@ before_install: #NOTE: DISPLAY-related tests don't break build on Travis
     - sudo apt-get -y install xorg openbox grace # DISPLAY=:0.0 xmgrace #Can't open display; Failed initializing GUI, exiting
     - set -e  # fail on any error
     - if [[ $COVERAGE == "true" ]]; then pip install coverage; fi
-    - if [[ $CYTHON == "true" ]]; then export NO_CYTHON_COMPILE=true; fi
-    - if [[ $CYTHON == "true" ]]; then pip install cython; fi
+    - if [[ $NOWHEEL == "true" ]]; then CIBUILDWHEEL=0 NPY_DISABLE_SVML=1 pip install numpy --no-binary :all: --no-build-isolation --pre; fi
 
 install:
     - python -m pip install .
